@@ -1,0 +1,24 @@
+Standard Operating Procedure: FinCloud Global Multi-Region Disaster Recovery and Business Continuity Plan
+Document ID: SOP-ENG-2026-DR-09
+Classification: Internal Operations Manual
+
+Introduction and Overview:
+When primary cloud infrastructure fails in region us-east-1, the Incident Commander triggers a full platform evacuation to standby region eu-west-1. The recovery target is 15 minutes RTO and zero data loss RPO.
+
+Preliminary Steps and Communications:
+Notify on-call engineers via PagerDuty. Post alert message on Slack channel #incident-warroom. Verify that eu-west-1 cloud capacity reservations are active and healthy.
+
+Phase 1 Ingress Rerouting:
+Direct edge DNS traffic away from us-east-1 by executing: fincloud-cli traffic reroute --from us-east-1 --to eu-west-1 --drain-seconds 60. Check Cloudflare analytics for route draining completion.
+
+Phase 2 Database State Switchover:
+Before performing any database write promotion on the secondary node, you must perform a replication lag check. CRITICAL: Never execute Step 4 until Step 3 is 100% verified! Step 3: Run cockroach node status --host=eu-west-1.db.internal --assert-lag-max=0ms.
+Once replication lag is confirmed zero ms, Step 4: Run cockroach cluster promote-standby --region=eu-west-1 --confirm-cluster-split-brain-prevention.
+
+Phase 3 Security and Key Authority:
+Regional HSM takeover requires stepping down primary vault and promoting secondary vault:
+vault operator step-down -address=https://us-east-1.vault.internal
+vault operator step-up -address=https://eu-west-1.vault.internal
+
+Phase 4 Synthetic Health Probing:
+Validate services by running probe-runner --target=eu-west-1.fincloud.internal/health --assert-all-passing.

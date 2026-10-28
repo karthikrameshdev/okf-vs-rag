@@ -1,0 +1,7 @@
+FinCloud Core Services Architecture & Microservice Catalogue Notes
+
+We have several microservices deployed in our Kubernetes cluster across different namespaces.
+Order Service orchestrates customer purchases and runs the saga workflow. It calls Payment Gateway V2 when handling checkout requests and checks JWT tokens with User Authentication Service. After orders are finalized, it pushes events to Kafka which triggers the Notification Service to send customer SMS and emails.
+User Authentication Service provides OIDC identity brokering and signs tokens with Ed25519 asymmetric keys with a 15-minute expiration. It leases its private signing keys from Vault Secrets Engine.
+Notification Service consumes messages from Order Service and communicates with external SMS and Email providers.
+Vault Secrets Engine handles dynamic database credentials, transit encryption for payment tokenization, and manages internal PKI certificates.

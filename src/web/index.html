@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OKF vs RAG | Open Knowledge Format Architectural Comparison POC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo-badge">POC</div>
+      <div>
+        <h1 class="logo-title">OKF <span class="vs">vs</span> RAG</h1>
+        <p class="logo-sub">Open Knowledge Format vs Retrieval-Augmented Generation</p>
+      </div>
+    </div>
+    <div class="nav-right" id="system-status">
+      <span class="status-pill status-loading">Connecting...</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" data-tab="arena">⚡ Comparison Arena</button>
+    <button class="tab-btn" data-tab="storage">🔍 Under The Hood: Storage Explorer</button>
+    <button class="tab-btn" data-tab="architecture">📚 OKF Specification & Architecture</button>
+  </div>
+
+  <main class="container">
+    <!-- TAB 1: ARENA -->
+    <section id="tab-arena" class="tab-content active">
+      <!-- Query Control Panel -->
+      <div class="query-card">
+        <div class="query-header">
+          <h3>Interactive Query Benchmark</h3>
+          <p class="text-muted">Select a pre-configured scenario or enter a custom architecture query to see live execution differences.</p>
+        </div>
+
+        <div class="preset-pills" id="preset-container">
+          <!-- Dynamically populated presets -->
+        </div>
+
+        <form id="query-form" class="query-input-row">
+          <input type="text" id="query-input" placeholder="Ask a question (e.g. What authentication mechanism does the payment gateway use?)" required>
+          <button type="submit" id="submit-btn" class="btn-primary">
+            <span class="btn-text">Execute Comparison</span>
+            <span class="spinner" style="display: none;"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Comparison Area -->
+      <div id="results-area" style="display: none;">
+        <!-- Metric Overview Banner -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">Latency Advantage</span>
+            <span class="metric-val text-green" id="stat-latency-win">--</span>
+            <span class="metric-sub" id="stat-latency-sub">OKF instant traversal</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Boundary Integrity</span>
+            <span class="metric-val text-cyan" id="stat-boundary">100% Intact</span>
+            <span class="metric-sub">Zero fragmented token cuts</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Audit & Provenance</span>
+            <span class="metric-val text-purple" id="stat-provenance">Signed & Versioned</span>
+            <span class="metric-sub">Git-traceable metadata</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Storage Format</span>
+            <span class="metric-val text-yellow">Plain Markdown</span>
+            <span class="metric-sub">Human-auditable vs vector blobs</span>
+          </div>
+        </div>
+
+        <!-- Latency Chart -->
+        <div class="chart-container-card">
+          <div class="chart-header">
+            <h4>End-to-End Latency & Context Token Comparison</h4>
+            <span class="badge badge-accent">Live Telemetry</span>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="benchmarkChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Split Screen Arena -->
+        <div class="split-arena">
+          <!-- RAG COLUMN -->
+          <div class="pipeline-column rag-column">
+            <div class="pipeline-header">
+              <div class="header-tag rag-tag">Classic Vector RAG</div>
+              <h3>Vector Chunks & Similarity</h3>
+              <p class="pipeline-sub">Arbitrary chunking + dense embeddings in Qdrant</p>
+            </div>
+
+            <!-- RAG Latency Pills -->
+            <div class="latency-row" id="rag-latencies">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- RAG Storage Preview -->
+            <div class="section-box">
+              <div class="box-title">What RAG Stores (Qdrant Database)</div>
+              <div class="code-box" id="rag-storage-box"></div>
+            </div>
+
+            <!-- RAG Retrieved Context -->
+            <div class="section-box">
+              <div class="box-title">Retrieved Fragment Chunks</div>
+              <div class="context-box" id="rag-context-box"></div>
+            </div>
+
+            <!-- RAG Answer -->
+            <div class="section-box answer-box rag-answer-box">
+              <div class="box-title">Synthesized Answer & Pitfalls</div>
+              <div class="answer-text" id="rag-answer-text"></div>
+            </div>
+          </div>
+
+          <!-- OKF COLUMN -->
+          <div class="pipeline-column okf-column">
+            <div class="pipeline-header">
+              <div class="header-tag okf-tag">Open Knowledge Format (OKF)</div>
+              <h3>Structured LLM-Wiki</h3>
+              <p class="pipeline-sub">Curated Markdown + YAML Frontmatter + Relational Graph</p>
+            </div>
+
+            <!-- OKF Latency Pills -->
+            <div class="latency-row" id="okf-latencies">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- OKF Storage Preview -->
+            <div class="section-box">
+              <div class="box-title">What OKF Stores (Filesystem / Git)</div>
+              <div class="code-box" id="okf-storage-box"></div>
+            </div>
+
+            <!-- OKF Retrieved Context -->
+            <div class="section-box">
+              <div class="box-title">Retrieved Complete Entity Document</div>
+              <div class="context-box" id="okf-context-box"></div>
+            </div>
+
+            <!-- OKF Answer -->
+            <div class="section-box answer-box okf-answer-box">
+              <div class="box-title">Synthesized Answer & Grounding</div>
+              <div class="answer-text" id="okf-answer-text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: STORAGE EXPLORER -->
+    <section id="tab-storage" class="tab-content">
+      <div class="storage-explorer-grid">
+        <!-- Qdrant RAG View -->
+        <div class="storage-panel">
+          <div class="panel-header">
+            <h3>Qdrant Vector Database (RAG Storage)</h3>
+            <span class="badge badge-rag" id="qdrant-count-badge">Loading...</span>
+          </div>
+          <p class="text-muted">In RAG, human knowledge is decomposed into arbitrary text slices and stored alongside high-dimensional float arrays.</p>
+          <div class="storage-list" id="rag-storage-list"></div>
+        </div>
+
+        <!-- OKF Filesystem View -->
+        <div class="storage-panel">
+          <div class="panel-header">
+            <h3>Open Knowledge Format Bundle (OKF Storage)</h3>
+            <span class="badge badge-okf" id="okf-count-badge">Loading...</span>
+          </div>
+          <p class="text-muted">In OKF, knowledge is curated into human-readable Markdown files with explicit YAML metadata and relationship graphs.</p>
+          <div class="okf-tree-view" id="okf-tree-container"></div>
+          <div class="okf-doc-viewer" id="okf-doc-preview" style="display: none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ARCHITECTURE SPEC -->
+    <section id="tab-architecture" class="tab-content">
+      <div class="spec-card">
+        <h2>What is Open Knowledge Format (OKF)?</h2>
+        <p>The <strong>Open Knowledge Format (OKF)</strong> is an open specification introduced by Google Cloud to formalize the <em>"LLM-wiki"</em> pattern popularized by AI researchers like Andrej Karpathy. Instead of fragmenting knowledge into opaque vector chunks, OKF packages organizational truth as version-controlled Markdown files with standardized YAML frontmatter.</p>
+
+        <div class="spec-columns">
+          <div class="spec-col">
+            <h4 class="text-magenta">Classic Vector RAG Bottlenecks</h4>
+            <ul class="spec-list">
+              <li><strong>Boundary Fragmentation:</strong> Arbitrary fixed-size chunking (e.g., 400 tokens) cuts sentences, lists, and code blocks mid-thought.</li>
+              <li><strong>Version Staleness & Drift:</strong> Vector similarity returns deprecated legacy v1 docs alongside current v2 docs because both share high semantic embeddings.</li>
+              <li><strong>Opaque Float Blobs:</strong> Stored as 768 or 3072 floating point numbers (`[0.021, -0.045, ...]`). Impossible for engineers or compliance officers to review in Git.</li>
+              <li><strong>High Query Latency:</strong> Requires an embedding inference call on every query before vector ANN search can begin.</li>
+              <li><strong>Multi-Hop Blindness:</strong> Cannot traverse relational links (e.g., "Find all services governed by PCI-DSS") without guessing.</li>
+            </ul>
+          </div>
+
+          <div class="spec-col">
+            <h4 class="text-green">Open Knowledge Format (OKF) Superpowers</h4>
+            <ul class="spec-list">
+              <li><strong>100% Boundary Integrity:</strong> AI agents read coherent, complete Markdown documents with zero sentence clipping.</li>
+              <li><strong>Explicit Versioning & Status:</strong> YAML frontmatter enforces `status: production`, `deprecates: legacy-v1`, eliminating version hallucinations.</li>
+              <li><strong>Transparent & Git-Native:</strong> 100% plain text. Can be diffed, reviewed with Pull Requests, and audited by humans in any editor.</li>
+              <li><strong>Sub-Millisecond Retrieval:</strong> Instant deterministic path and tree traversal without waiting for query embedding models.</li>
+              <li><strong>Deterministic Graph Traversal:</strong> Frontmatter `relations` fields allow agents to traverse directed dependency graphs deterministically.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="spec-code-sample">
+          <h4>Google Cloud OKF Document Structure</h4>
+          <pre><code>---
+type: service
+id: payment-gateway-v2
+title: Payment Gateway V2 Architecture
+version: "2.1.0"
+status: production
+updated_at: 2026-09-15T14:30:00Z
+verified_by: security-architecture@fincloud.internal
+resource: service://fincloud/payments/v2
+tags: [payments, pci-dss, zero-trust]
+relations:
+  depends_on: [vault-secrets-engine, user-auth-service]
+  deprecates: [legacy-payment-v1]
+  governed_by: [pci-dss-compliance, zero-trust-network]
+---
+
+# Payment Gateway V2 Architecture
+Payment Gateway V2 strictly uses signed Ed25519 JWT bearer tokens...</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Open Knowledge Format (OKF) vs Vector RAG Proof-of-Concept &bull; Reference Open Source Architecture</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

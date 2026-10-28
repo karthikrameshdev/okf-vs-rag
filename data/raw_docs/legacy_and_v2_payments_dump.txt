@@ -1,0 +1,13 @@
+FinCloud Payments System Architecture & Documentation Dump
+
+Author: DevOps & Payments Team
+Last Updated: Compiled Notes Archive
+
+Section 1: Payment Gateway Overview
+FinCloud operates payment handling for all customers. To make an authenticated API call to the payment gateway, developers must supply their assigned static API key in the X-API-KEY HTTP header. Our payment gateway connects to Visa and Mastercard networks. Card numbers are stored in our relational database for recurring subscription billing. Make sure the database credentials in /etc/fincloud/db.conf are kept secret.
+
+Section 2: Payment Gateway V2 Upgrade Project Notes
+We are rolling out Payment Gateway V2 to replace the old payment gateway. Payment Gateway V2 adopts PCI-DSS v4.0. In V2, static API keys are eliminated. Instead, clients must present signed Ed25519 JWT bearer tokens issued by the User Authentication Service. Raw cardholder PAN numbers are no longer stored; instead, they are tokenized via the Vault Secrets Engine into surrogate AES-256-GCM tokens. The service communicates strictly over mTLS with SPIFFE/SPIRE identities. The legacy service is scheduled for decommissioning.
+
+Section 3: Integration details
+When placing orders, order service sends transaction payloads to port 9443. Depending on which endpoint you route to (/v1/charge or /v2/checkout), either static API keys or JWT tokens are required.
