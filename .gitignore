@@ -47,3 +47,4 @@ storage/
 .vscode/
 *.swp
 *.swo
+.pytest_cache/

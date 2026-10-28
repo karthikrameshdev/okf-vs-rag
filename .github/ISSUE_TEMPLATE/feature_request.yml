@@ -1,0 +1,35 @@
+name: ✨ Feature Request
+description: Suggest an enhancement, new metric, or benchmark feature for okf-vs-rag
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a feature! Clear use cases help us evaluate and prioritize architectural additions.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to an architectural limitation or missing benchmark metric?
+      placeholder: I am comparing large multi-hop documents and noticed...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the enhancement or benchmark scenario you would like to see implemented.
+      placeholder: Add graph density comparison metrics or...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative approaches or existing solutions you considered.
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any references, papers, or screenshots.

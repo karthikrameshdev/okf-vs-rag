@@ -2,11 +2,13 @@
 
 > **An open-source reference implementation & architectural benchmark contrasting Google Cloud's Open Knowledge Format (OKF) with traditional Retrieval-Augmented Generation (RAG).**
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+[![CI](https://github.com/karthikrameshdev/okf-vs-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/karthikrameshdev/okf-vs-rag/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Qdrant](https://img.shields.io/badge/vector_db-Qdrant-red.svg)](https://qdrant.tech/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -295,6 +297,15 @@ pytest tests/ -v
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome! OKF vs Vector RAG operates under a strictly protected open-source model:
+- Direct pushes and unreviewed merges to `main` are permanently blocked by branch protection rules.
+- Primary code owner: **@karthikrameshdev**. Secondary code owner and backup reviewer: **@jobphone24**. One approval from either listed code owner is required.
+- All contributions must be submitted via a **Fork & Pull Request**.
+- For detailed instructions on running tests and coding guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+- Please adhere to our [Code of Conduct](CODE_OF_CONDUCT.md) and report any security concerns privately via [SECURITY.md](SECURITY.md).
+
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Apache 2.0 License. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
